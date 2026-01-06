@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Expense Tracker (PET) System</title>
+    <link rel="stylesheet" href="pet.css">
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!-- SheetJS for Excel integration -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+    </div>
+
+    <!-- Header Section -->
+    <header class="header">
+        <div class="container">
+            <div class="header-glow"></div>
+            <h1>Personal Expense Tracker</h1>
+            <p class="tagline">Smart Finance Management at Your Fingertips</p>
+        </div>
+    </header>
+
+    <!-- Project Information Banner -->
+    <section class="project-info">
+        <div class="container">
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-icon">📊</span>
+                    <strong>Project:</strong> Personal Expense Tracker System
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">📚</span>
+                    <strong>Subject:</strong> AICT Lab - Final Project
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">📅</span>
+                    <strong>Submission Date:</strong> January 6, 2026
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+        <div class="container">
+            <div class="nav-scroll">
+                <button class="tab-btn active" onclick="showTab('dashboard')">
+                    <span class="btn-icon"></span> Dashboard
+                </button>
+                <button class="tab-btn" onclick="showTab('add-expense')">
+                    <span class="btn-icon"></span> Add Expense
+                </button>
+                <button class="tab-btn" onclick="showTab('manage')">
+                    <span class="btn-icon"></span> Manage Expenses
+                </button>
+                <button class="tab-btn" onclick="showTab('reports')">
+                    <span class="btn-icon"></span> Reports & Analytics
+                </button>
+                <button class="tab-btn" onclick="showTab('categories')">
+                    <span class="btn-icon"></span> Categories
+                </button>
+                <button class="tab-btn" onclick="showTab('budget')">
+                    <span class="btn-icon"></span> Budget Planner
+                </button>
+                <button class="tab-btn" onclick="showTab('export')">
+                    <span class="btn-icon"></span> Import/Export
+                </button>
+                <button class="tab-btn" onclick="showTab('team')">
+                    <span class="btn-icon"></span> Team Members
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <div class="container">
+            
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <h2><span class="title-icon">📊</span> Dashboard Overview</h2>
+                
+                <!-- Summary Cards -->
+                <div class="cards-grid">
+                    <div class="card card-blue">
+                        <div class="card-icon">💰</div>
+                        <h3>Total Expenses</h3>
+                        <p class="card-value" id="total-expenses">Rs. 0</p>
+                        <p class="card-label">This Month</p>
+                        <div class="card-glow"></div>
+                    </div>
+                    <div class="card card-green">
+                        <div class="card-icon">📝</div>
+                        <h3>Total Transactions</h3>
+                        <p class="card-value" id="total-transactions">0</p>
+                        <p class="card-label">All Time</p>
+                        <div class="card-glow"></div>
+                    </div>
+                    <div class="card card-orange">
+                        <div class="card-icon">🏆</div>
+                        <h3>Top Category</h3>
+                        <p class="card-value" id="top-category">N/A</p>
+                        <p class="card-label">Most Spent</p>
+                        <div class="card-glow"></div>
+                    </div>
+                    <div class="card card-purple">
+                        <div class="card-icon">📊</div>
+                        <h3>Average Daily</h3>
+                        <p class="card-value" id="avg-daily">Rs. 0</p>
+                        <p class="card-label">This Month</p>
+                        <div class="card-glow"></div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h3>💼 Expenses by Category</h3>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>📈 Monthly Trend (Last 30 Days)</h3>
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="recent-transactions">
+                    <h3>🕒 Recent Transactions</h3>
+                    <div id="recent-list" class="transactions-list"></div>
+                </div>
+            </div>
+
+            <!-- Add Expense Tab -->
+            <div id="add-expense" class="tab-content">
+                <h2><span class="title-icon">➕</span> Add New Expense</h2>
+                <div class="form-wrapper">
+                    <form id="expense-form" class="expense-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="expense-amount">
+                                    <span class="label-icon">💵</span> Amount (Rs.)*
+                                </label>
+                                <input type="number" id="expense-amount" required min="0" step="0.01" placeholder="Enter amount">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="expense-category">
+                                    <span class="label-icon">🏷️</span> Category*
+                                </label>
+                                <select id="expense-category" required>
+                                    <option value="">Select Category</option>
+                                    <option value="Food">🍔 Food</option>
+                                    <option value="Transport">🚗 Transport</option>
+                                    <option value="Utilities">💡 Utilities</option>
+                                    <option value="Entertainment">🎮 Entertainment</option>
+                                    <option value="Healthcare">⚕️ Healthcare</option>
+                                    <option value="Shopping">🛍️ Shopping</option>
+                                    <option value="Education">📚 Education</option>
+                                    <option value="Other">📦 Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="expense-date">
+                                    <span class="label-icon">📅</span> Date*
+                                </label>
+                                <input type="date" id="expense-date" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="expense-payment">
+                                    <span class="label-icon">💳</span> Payment Method
+                                </label>
+                                <select id="expense-payment">
+                                    <option value="Cash">💵 Cash</option>
+                                    <option value="Card">💳 Credit/Debit Card</option>
+                                    <option value="Online">🌐 Online Payment</option>
+                                    <option value="Other">📱 Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="expense-description">
+                                <span class="label-icon">📝</span> Description
+                            </label>
+                            <textarea id="expense-description" rows="3" placeholder="Add notes about this expense..."></textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <span class="btn-icon">💾</span> Save Expense
+                            </button>
+                            <button type="reset" class="btn btn-secondary">
+                                <span class="btn-icon">🔄</span> Clear Form
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Manage Expenses Tab -->
+            <div id="manage" class="tab-content">
+                <h2><span class="title-icon">📋</span> Manage Your Expenses</h2>
+                
+                <!-- Search and Filter -->
+                <div class="filter-section">
+                    <div class="search-wrapper">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="search-expense" placeholder="Search by description..." class="search-input">
+                    </div>
+                    
+                    <div class="filter-controls">
+                        <select id="filter-category" class="filter-select">
+                            <option value="">All Categories</option>
+                            <option value="Food">🍔 Food</option>
+                            <option value="Transport">🚗 Transport</option>
+                            <option value="Utilities">💡 Utilities</option>
+                            <option value="Entertainment">🎮 Entertainment</option>
+                            <option value="Healthcare">⚕️ Healthcare</option>
+                            <option value="Shopping">🛍️ Shopping</option>
+                            <option value="Education">📚 Education</option>
+                            <option value="Other">📦 Other</option>
+                        </select>
+                        
+                        <input type="date" id="filter-from" class="filter-date" placeholder="From Date">
+                        <input type="date" id="filter-to" class="filter-date" placeholder="To Date">
+                        
+                        <button onclick="applyFilters()" class="btn btn-small btn-primary">Apply</button>
+                        <button onclick="clearFilters()" class="btn btn-small btn-secondary">Clear</button>
+                    </div>
+                </div>
+
+                <!-- Expenses Table -->
+                <div class="table-container">
+                    <table class="expenses-table" id="expenses-table">
+                        <thead>
+                            <tr>
+                                <th>📅 Date</th>
+                                <th>🏷️ Category</th>
+                                <th>💰 Amount</th>
+                                <th>💳 Payment</th>
+                                <th>📝 Description</th>
+                                <th>⚙️ Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expenses-tbody">
+                            <!-- Data will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Reports Tab -->
+            <div id="reports" class="tab-content">
+                <h2><span class="title-icon">📈</span> Reports & Analytics</h2>
+                
+                <!-- Report Controls -->
+                <div class="report-controls">
+                    <select id="report-period" class="filter-select">
+                        <option value="weekly">📅 Weekly Report</option>
+                        <option value="monthly" selected>📊 Monthly Report</option>
+                        <option value="yearly">📈 Yearly Report</option>
+                        <option value="custom">🗓️ Custom Period</option>
+                    </select>
+                    
+                    <div id="custom-period" style="display: none;">
+                        <input type="date" id="report-from" class="filter-date">
+                        <input type="date" id="report-to" class="filter-date">
+                    </div>
+                    
+                    <button onclick="generateReport()" class="btn btn-primary">Generate Report</button>
+                    <button onclick="printReport()" class="btn btn-secondary">🖨️ Print Report</button>
+                </div>
+
+                <!-- Report Display -->
+                <div id="report-display" class="report-display">
+                    <!-- Category Breakdown Chart -->
+                    <div class="chart-container full-width">
+                        <h3>💼 Expense Breakdown by Category</h3>
+                        <canvas id="reportPieChart"></canvas>
+                    </div>
+                    
+                    <!-- Daily Trend Chart -->
+                    <div class="chart-container full-width">
+                        <h3>📊 Daily Expense Trend</h3>
+                        <canvas id="reportLineChart"></canvas>
+                    </div>
+                    
+                    <!-- Summary Statistics -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">💰</div>
+                            <h4>Total Spent</h4>
+                            <p id="report-total" class="stat-value">Rs. 0</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📊</div>
+                            <h4>Average per Day</h4>
+                            <p id="report-avg" class="stat-value">Rs. 0</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🔝</div>
+                            <h4>Highest Expense</h4>
+                            <p id="report-max" class="stat-value">Rs. 0</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📝</div>
+                            <h4>Number of Transactions</h4>
+                            <p id="report-count" class="stat-value">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories Tab -->
+            <div id="categories" class="tab-content">
+                <h2><span class="title-icon">🏷️</span> Expense Categories</h2>
+                
+                <div class="categories-grid">
+                    <div class="category-card" data-category="Food">
+                        <div class="category-icon">🍔</div>
+                        <h3>Food</h3>
+                        <p class="category-amount" data-cat="Food">Rs. 0</p>
+                        <p class="category-count" data-cat="Food">0 transactions</p>
+                        <div class="category-glow"></div>
+                    </div>
+                    
+                    <div class="category-card" data-category="Transport">
+                        <div class="category-icon">🚗</div>
+                        <h3>Transport</h3>
+                        <p class="category-amount" data-cat="Transport">Rs. 0</p>
+                        <p class="category-count" data-cat="Transport">0 transactions</p>
+                        <div class="category-glow"></div>
+                    </div>
+                    
+                    <div class="category-card" data-category="Utilities">
+                        <div class="category-icon">💡</div>
+                        <h3>Utilities</h3>
+                        <p class="category-amount" data-cat="Utilities">Rs. 0</p>
+                        <p class="category-count" data-cat="Utilities">0 transactions</p>
+                        <div class="category-glow"></div>
+                    </div>
+                    
+                    <div class="category-card" data-category="Entertainment">
+                        <div class="category-icon">🎮</div>
+                        <h3>Entertainment</h3>
+                        <p class="category-amount" data-cat="Entertainment">Rs. 0</p>
+                        <p class="category-count" data-cat="Entertainment">0 transactions</p>
+                        <div class="category-glow"></div>
+                    </div>
+                    
+                    <div class="category-card" data-category="Healthcare">
+                        <div class="category-icon">⚕️</div>
+                        <h3>Healthcare</h3>
+                        <p class="category-amount" data-cat="Healthcare">Rs. 0</p>
+                        <p class="category-count" data-cat="Healthcare">0 transactions</p>
+                        <div class="category-glow"></div>
+                    </div>
+                    
+                    <div class="category-card" data-category="Shopping">
+                        <div class="category-icon">🛍️</div>
+                        <h3>Shopping</h3>
+                        <p class="category-amount" data-cat="Shopping">Rs. 0</p>
+                        <p class="category-count" data-cat="Shopping">0 transactions</p>
+                        <div class="category-glow"></div>
+                    </div>
+                    
+                    <div class="category-card" data-category="Education">
+                        <div class="category-icon">📚</div>
+                        <h3>Education</h3>
+                        <p class="category-amount" data-cat="Education">Rs. 0</p>
+                        <p class="category-count" data-cat="Education">0 transactions</p>
+                        <div class="category-glow"></div>
+                    </div>
+                    
+                    <div class="category-card" data-category="Other">
+                        <div class="category-icon">📦</div>
+                        <h3>Other</h3>
+                        <p class="category-amount" data-cat="Other">Rs. 0</p>
+                        <p class="category-count" data-cat="Other">0 transactions</p>
+                        <div class="category-glow"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Budget Planner Tab -->
+            <div id="budget" class="tab-content">
+                <h2><span class="title-icon">💵</span> Budget Planner</h2>
+                
+                <div class="budget-section">
+                    <h3>💰 Set Monthly Budget Limits</h3>
+                    <form id="budget-form" class="budget-form">
+                        <div class="budget-inputs">
+                            <div class="budget-input-group">
+                                <label>🍔 Food Budget</label>
+                                <input type="number" id="budget-food" placeholder="Rs." min="0">
+                            </div>
+                            <div class="budget-input-group">
+                                <label>🚗 Transport Budget</label>
+                                <input type="number" id="budget-transport" placeholder="Rs." min="0">
+                            </div>
+                            <div class="budget-input-group">
+                                <label>🎮 Entertainment Budget</label>
+                                <input type="number" id="budget-entertainment" placeholder="Rs." min="0">
+                            </div>
+                            <div class="budget-input-group">
+                                <label>💰 Total Monthly Budget</label>
+                                <input type="number" id="budget-total" placeholder="Rs." min="0">
+                            </div>
+                        </div>
+                        <button type="button" onclick="saveBudget()" class="btn btn-primary">💾 Save Budget</button>
+                    </form>
+                </div>
+
+                <div class="budget-progress-section">
+                    <h3>📊 Budget vs Actual Spending</h3>
+                    <div id="budget-progress" class="budget-progress">
+                        <!-- Budget progress bars will be added by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Import/Export Tab -->
+            <div id="export" class="tab-content">
+                <h2><span class="title-icon">📥</span> Import / Export Data</h2>
+                
+                <div class="export-section">
+                    <h3>📤 Export Your Data</h3>
+                    <p>Download your expense data in various formats:</p>
+                    <div class="export-buttons">
+                        <button onclick="exportToExcel()" class="btn btn-primary">
+                            <span class="btn-icon">📊</span> Export to Excel
+                        </button>
+                        <button onclick="exportToCSV()" class="btn btn-success">
+                            <span class="btn-icon">📄</span> Export to CSV
+                        </button>
+                        <button onclick="exportToJSON()" class="btn btn-info">
+                            <span class="btn-icon">📋</span> Export to JSON
+                        </button>
+                    </div>
+                </div>
+
+                <div class="import-section">
+                    <h3>📥 Import Data</h3>
+                    <p>Upload an Excel or CSV file to import expenses:</p>
+                    <div class="file-upload">
+                        <input type="file" id="import-file" accept=".xlsx,.xls,.csv" class="file-input">
+                        <button onclick="importData()" class="btn btn-primary">
+                            <span class="btn-icon">⬆️</span> Upload & Import
+                        </button>
+                    </div>
+                    <p class="help-text">Expected format: Date, Category, Amount, Payment Method, Description</p>
+                </div>
+
+                <div class="data-management">
+                    <h3>⚙️ Data Management</h3>
+                    <button onclick="backupData()" class="btn btn-secondary">
+                        <span class="btn-icon">💾</span> Backup All Data
+                    </button>
+                    <button onclick="clearAllData()" class="btn btn-danger">
+                        <span class="btn-icon">🗑️</span> Clear All Data
+                    </button>
+                </div>
+            </div>
+
+            <!-- Team Members Tab -->
+            <div id="team" class="tab-content">
+                <h2><span class="title-icon">👥</span> Project Team Members</h2>
+                
+                <div class="project-details">
+                    <div class="detail-card">
+                        <h3>📚 Project Information</h3>
+                        <ul class="detail-list">
+                            <li><strong>Project Name:</strong> Personal Expense Tracker (PET) System</li>
+                            <li><strong>Subject:</strong> AICT Lab</li>
+                            <li><strong>Project Type:</strong> Final Semester Project</li>
+                            <li><strong>Department:</strong> BSc. Computer Science</li>
+                            <li><strong>Session:</strong> 2025</li>
+                            <li><strong>Section:</strong> C</li>
+                            <li><strong>Submitted To:</strong> Sir Noman</li>
+                            <li><strong>Submission Date:</strong> January 6, 2026</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="team-grid">
+                    <div class="team-member-card">
+                        <div class="member-avatar"></div>
+                        <h3>Atiqa Lohani</h3>
+                        <p class="roll-no">Roll No: 2025-CS-682</p>
+                        <p class="department">BSc. Computer Science</p>
+                        <p class="session">Session: 2025</p>
+                    </div>
+
+                    <div class="team-member-card">
+                        <div class="member-avatar"></div>
+                        <h3>Laiba Riaz</h3>
+                        <p class="roll-no">Roll No: 2025-CS-692</p>
+                        <p class="department">BSc. Computer Science</p>
+                        <p class="session">Session: 2025</p>
+                    </div>
+
+                    <div class="team-member-card">
+                        <div class="member-avatar"></div>
+                        <h3>Areeba Sheraz</h3>
+                        <p class="roll-no">Roll No: 2025-CS-680</p>
+                        <p class="department">BSc. Computer Science</p>
+                        <p class="session">Session: 2025</p>
+                    </div>
+
+                    <div class="team-member-card">
+                        <div class="member-avatar"></div>
+                        <h3>Rabia Shehzadi</h3>
+                        <p class="roll-no">Roll No: 2025-CS-717</p>
+                        <p class="department">BSc. Computer Science</p>
+                        <p class="session">Session: 2025</p>
+                    </div>
+                </div>
+
+                <div class="acknowledgment">
+                    <h3>Acknowledgment</h3>
+                    <p>We would like to express our sincere gratitude to <strong>Sir Noman</strong> for his guidance and support throughout this project. This Personal Expense Tracker system represents our dedication to applying the concepts learned in AICT Lab to create a practical, user-friendly solution for personal finance management.</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Personal Expense Tracker System | AICT Lab Final Project | BSc. Computer Science - Section C</p>
+            <p>Developed by: Atiqa Lohani, Laiba Riaz, Areeba Sheraz, Rabia Shehzadi</p>
+        </div>
+    </footer>
+
+    <!-- Modal for Edit Expense -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h2>✏️ Edit Expense</h2>
+            <form id="edit-expense-form">
+                <input type="hidden" id="edit-expense-id">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="edit-expense-amount">💵 Amount (Rs.)*</label>
+                        <input type="number" id="edit-expense-amount" required min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-expense-category">🏷️ Category*</label>
+                        <select id="edit-expense-category" required>
+                            <option value="Food">🍔 Food</option>
+                            <option value="Transport">🚗 Transport</option>
+                            <option value="Utilities">💡 Utilities</option>
+                            <option value="Entertainment">🎮 Entertainment</option>
+                            <option value="Healthcare">⚕️ Healthcare</option>
+                            <option value="Shopping">🛍️ Shopping</option>
+                            <option value="Education">📚 Education</option>
+                            <option value="Other">📦 Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-expense-date">📅 Date*</label>
+                        <input type="date" id="edit-expense-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-expense-payment">💳 Payment Method</label>
+                        <select id="edit-expense-payment">
+                            <option value="Cash">💵 Cash</option>
+                            <option value="Card">💳 Credit/Debit Card</option>
+                            <option value="Online">🌐 Online Payment</option>
+                            <option value="Other">📱 Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group full-width">
+                    <label for="edit-expense-description">📝 Description</label>
+                    <textarea id="edit-expense-description" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">💾 Update Expense</button>
+                    <button type="button" onclick="closeEditModal()" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="pet.js"></script>
+</body>
+</html>
