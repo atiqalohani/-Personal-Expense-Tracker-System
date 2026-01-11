@@ -229,6 +229,8 @@ body {
     box-shadow: var(--shadow-lg);
     border-bottom: 1px solid var(--border-color);
     backdrop-filter: blur(10px);
+    
+    text-align: center;
 }
 
 .nav-scroll {
@@ -267,10 +269,15 @@ body {
     white-space: nowrap;
     position: relative;
     overflow: hidden;
+
+    /* 👇 CENTER FIX */
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
+    text-align: center;
+    gap: 0.4rem;
 }
+
 
 .tab-btn::before {
     content: '';
